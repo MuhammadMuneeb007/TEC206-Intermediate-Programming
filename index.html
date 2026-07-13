@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python Class & Object Playground</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #68738a;
+      --line: #dfe5ef;
+      --accent: #5b5ce2;
+      --accent-soft: #eeeeff;
+      --success: #16835f;
+      --warning: #c97912;
+      --danger: #d94b57;
+      --shadow: 0 12px 35px rgba(36, 44, 72, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button, input, select { font: inherit; }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    header {
+      background: #15172b;
+      color: white;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .brand p {
+      margin: 5px 0 0;
+      color: #b9bdd0;
+      font-size: 13px;
+    }
+
+    .lesson-pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      color: #f2f2ff;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 330px minmax(440px, 1fr) 390px;
+      gap: 16px;
+      padding: 16px;
+      min-height: 0;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .panel-header p {
+      margin: 6px 0 0;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .panel-body {
+      padding: 16px 18px 20px;
+      overflow: auto;
+      max-height: calc(100vh - 138px);
+    }
+
+    .concept-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .concept {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 6px;
+      text-align: center;
+      background: #fafbfe;
+    }
+
+    .concept strong {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--accent);
+    }
+
+    .concept span {
+      display: block;
+      margin-top: 3px;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #eef1f7;
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      border: 0;
+      padding: 10px;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .tab.active {
+      background: white;
+      color: var(--text);
+      box-shadow: 0 3px 10px rgba(24,32,64,.10);
+    }
+
+    .blueprint-card {
+      border: 1px solid #cfd5ff;
+      background: linear-gradient(180deg, #f7f7ff 0%, #ffffff 100%);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .blueprint-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .blueprint-title strong { font-size: 14px; }
+    .blueprint-title span {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-radius: 999px;
+      padding: 5px 8px;
+    }
+
+    .mini-row {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 8px;
+      font-size: 12px;
+      padding: 6px 0;
+      border-top: 1px dashed #dce0f5;
+    }
+
+    .mini-row:first-of-type { border-top: 0; }
+    .mini-row b { color: var(--muted); }
+
+    .form-section { margin-top: 16px; }
+    .form-section h3 {
+      font-size: 12px;
+      margin: 0 0 10px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+    }
+
+    .field {
+      display: grid;
+      grid-template-columns: 105px 1fr;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .field label { font-size: 12px; color: var(--muted); }
+
+    input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 9px 10px;
+      background: white;
+      color: var(--text);
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    input[type="color"] {
+      padding: 3px;
+      min-height: 38px;
+    }
+
+    .primary-btn, .secondary-btn, .method-btn, .danger-btn {
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 750;
+      transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    }
+
+    .primary-btn:hover, .secondary-btn:hover, .method-btn:hover, .danger-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .primary-btn {
+      width: 100%;
+      padding: 11px 14px;
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 8px 18px rgba(91,92,226,.25);
+    }
+
+    .secondary-btn {
+      padding: 9px 12px;
+      background: #eef1f7;
+      color: var(--text);
+    }
+
+    .danger-btn {
+      padding: 9px 12px;
+      background: #fff0f1;
+      color: var(--danger);
+    }
+
+    .custom-method-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .stage-panel {
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+    }
+
+    .stage-topbar {
+      padding: 13px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcff;
+    }
+
+    .stage-topbar strong { font-size: 13px; }
+    .instance-count {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .teaching-flow {
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 7px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+    }
+
+    .step-chip {
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: #f0f2f8;
+      color: #505c72;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .arrow { color: #a2aabd; }
+
+    .stage {
+      position: relative;
+      min-height: 480px;
+      overflow: auto;
+      padding: 24px;
+      background:
+        linear-gradient(rgba(110,120,145,.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(110,120,145,.07) 1px, transparent 1px),
+        #f9fbff;
+      background-size: 24px 24px;
+    }
+
+    .empty-state {
+      min-height: 420px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .empty-state .icon { font-size: 52px; }
+    .empty-state h3 { color: var(--text); margin: 10px 0 4px; }
+    .empty-state p { max-width: 330px; font-size: 13px; line-height: 1.5; margin: 0; }
+
+    .object-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+
+    .object-card {
+      position: relative;
+      min-height: 270px;
+      border: 2px solid transparent;
+      border-radius: 16px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(45, 54, 84, .11);
+      padding: 14px;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    .object-card:hover { transform: translateY(-2px); }
+    .object-card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 12px 34px rgba(91,92,226,.22);
+    }
+
+    .object-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 5px 7px;
+    }
+
+    .object-title {
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      max-width: 115px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .visual-wrap {
+      height: 150px;
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    .person-visual {
+      width: 90px;
+      height: 138px;
+      position: relative;
+      transition: transform .2s ease;
+    }
+
+    .person-visual.walking {
+      animation: walkBounce .45s infinite alternate ease-in-out;
+    }
+
+    @keyframes walkBounce {
+      from { transform: translateX(-8px) translateY(0) rotate(-1deg); }
+      to { transform: translateX(8px) translateY(-4px) rotate(1deg); }
+    }
+
+    .head {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      position: absolute;
+      left: 16px;
+      top: 0;
+      border: 3px solid #30364a;
+    }
+
+    .eye {
+      position: absolute;
+      top: 23px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #20263a;
+    }
+
+    .body-shape {
+      width: 66px;
+      height: 58px;
+      position: absolute;
+      left: 12px;
+      top: 53px;
+      border-radius: 18px 18px 10px 10px;
+      border: 3px solid #30364a;
+    }
+
+    .leg {
+      position: absolute;
+      width: 9px;
+      height: 37px;
+      background: #30364a;
+      top: 103px;
+      border-radius: 5px;
+      transform-origin: top center;
+    }
+
+    .leg.left { left: 29px; }
+    .leg.right { right: 29px; }
+    .walking .leg.left { transform: rotate(15deg); }
+    .walking .leg.right { transform: rotate(-15deg); }
+
+    .speech {
+      position: absolute;
+      top: 1px;
+      left: 98px;
+      width: 100px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 7px;
+      font-size: 10px;
+      box-shadow: 0 5px 14px rgba(0,0,0,.08);
+      opacity: 0;
+      transform: scale(.9);
+      transition: .18s ease;
+      pointer-events: none;
+    }
+
+    .speech.show { opacity: 1; transform: scale(1); }
+
+    .phone-visual {
+      width: 82px;
+      height: 142px;
+      border-radius: 18px;
+      border: 4px solid #272c3c;
+      position: relative;
+      box-shadow: 0 8px 15px rgba(23,29,49,.18);
+      transition: .2s ease;
+    }
+
+    .phone-screen {
+      position: absolute;
+      inset: 7px;
+      border-radius: 11px;
+      background: #151824;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 10px;
+      overflow: hidden;
+    }
+
+    .phone-screen.on {
+      background: linear-gradient(145deg, #3f51d7, #8f67e8 55%, #ff8a99);
+    }
+
+    .camera-cluster {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: grid;
+      grid-template-columns: repeat(2, 10px);
+      gap: 4px;
+      z-index: 2;
+    }
+
+    .camera-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #0c1020;
+      border: 2px solid #626d87;
+    }
+
+    .torch {
+      position: absolute;
+      top: 11px;
+      right: 11px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #ece7c9;
+      z-index: 2;
+    }
+
+    .torch.on {
+      background: #fff8a3;
+      box-shadow: 0 0 8px 4px #fff4a0, 0 0 28px 12px rgba(255,239,114,.45);
+    }
+
+    .object-properties {
+      display: grid;
+      gap: 4px;
+      margin-top: 4px;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .object-properties div {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 4px 6px;
+      background: #f7f8fb;
+      border-radius: 6px;
+    }
+
+    .object-properties b {
+      color: var(--text);
+      max-width: 95px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .action-dock {
+      border-top: 1px solid var(--line);
+      padding: 13px 16px;
+      background: white;
+    }
+
+    .action-dock-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .action-dock-head strong { font-size: 12px; }
+    .selected-label { font-size: 11px; color: var(--muted); }
+
+    .method-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .method-btn {
+      padding: 9px 11px;
+      background: #f0f1ff;
+      color: #4445bb;
+      font-size: 12px;
+    }
+
+    .method-btn:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .right-column {
+      display: grid;
+      grid-template-rows: minmax(330px, 1fr) auto;
+      gap: 16px;
+      min-height: 0;
+    }
+
+    .code-panel {
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    pre {
+      margin: 0;
+      padding: 16px;
+      background: #131521;
+      color: #d9def7;
+      font: 12px/1.55 "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      overflow: auto;
+      min-height: 390px;
+      white-space: pre;
+    }
+
+    .kw { color: #c792ea; }
+    .fn { color: #82aaff; }
+    .str { color: #c3e88d; }
+    .num { color: #f78c6c; }
+    .comment { color: #68718b; }
+
+    .editor-panel .panel-body {
+      max-height: none;
+      padding-top: 13px;
+    }
+
+    .editor-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .event-log {
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .event-log h3 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      margin: 0 0 8px;
+    }
+
+    .log-list {
+      display: grid;
+      gap: 6px;
+      max-height: 92px;
+      overflow: auto;
+    }
+
+    .log-item {
+      font-size: 10px;
+      padding: 6px 8px;
+      border-left: 3px solid var(--accent);
+      background: #f6f7fb;
+      color: #505a70;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translate(-50%, 15px);
+      background: #15172b;
+      color: white;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s ease;
+      z-index: 20;
+      box-shadow: var(--shadow);
+    }
+
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 1200px) {
+      main { grid-template-columns: 310px 1fr; }
+      .right-column { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; grid-template-rows: none; }
+      .panel-body { max-height: none; }
+    }
+
+    @media (max-width: 800px) {
+      header { align-items: flex-start; flex-direction: column; }
+      main { grid-template-columns: 1fr; }
+      .right-column { grid-column: auto; grid-template-columns: 1fr; }
+      .stage { min-height: 420px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header>
+      <div class="brand">
+        <h1>Python Class & Object Playground</h1>
+        <p>Build a blueprint, create instances, change attributes, and call methods visually.</p>
+      </div>
+      <div class="lesson-pill">Class → Object → Attributes → Methods</div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <div class="panel-header">
+          <h2>1. Choose a class blueprint</h2>
+          <p>The class defines what every object of that type can store and do.</p>
+        </div>
+        <div class="panel-body">
+          <div class="concept-strip">
+            <div class="concept"><strong>Class</strong><span>blueprint</span></div>
+            <div class="concept"><strong>Object</strong><span>instance</span></div>
+            <div class="concept"><strong>Attribute</strong><span>data</span></div>
+            <div class="concept"><strong>Method</strong><span>action</span></div>
+          </div>
+
+          <div class="tabs">
+            <button class="tab active" data-class="person">👤 Person</button>
+            <button class="tab" data-class="phone">📱 Phone</button>
+          </div>
+
+          <div id="blueprintSummary" class="blueprint-card"></div>
+          <div id="createForm"></div>
+
+          <div class="form-section">
+            <h3>Add a method to this class</h3>
+            <div class="custom-method-row">
+              <input id="customMethodInput" placeholder="e.g. dance" maxlength="18" />
+              <button id="addMethodBtn" class="secondary-btn">Add</button>
+            </div>
+            <p style="font-size:10px;color:var(--muted);line-height:1.4;margin:8px 0 0;">
+              A new method button will appear for every object created from this class.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel stage-panel">
+        <div class="stage-topbar">
+          <strong>2. Object board</strong>
+          <span id="instanceCount" class="instance-count">0 objects</span>
+        </div>
+        <div class="teaching-flow">
+          <span class="step-chip">Blueprint</span><span class="arrow">→</span>
+          <span class="step-chip">Instantiate</span><span class="arrow">→</span>
+          <span class="step-chip">Object appears</span><span class="arrow">→</span>
+          <span class="step-chip">Call a method</span>
+        </div>
+        <div id="stage" class="stage"></div>
+        <div class="action-dock">
+          <div class="action-dock-head">
+            <strong>3. Call a method on the selected object</strong>
+            <span id="selectedLabel" class="selected-label">No object selected</span>
+          </div>
+          <div id="methodButtons" class="method-buttons"></div>
+        </div>
+      </section>
+
+      <div class="right-column">
+        <section class="panel code-panel">
+          <div class="panel-header">
+            <h2>Equivalent Python code</h2>
+            <p>The visual changes and the code describe the same class and objects.</p>
+          </div>
+          <pre id="codePreview"></pre>
+        </section>
+
+        <section class="panel editor-panel">
+          <div class="panel-header">
+            <h2>4. Edit the selected object</h2>
+            <p>Each instance stores its own attribute values.</p>
+          </div>
+          <div class="panel-body">
+            <div id="objectEditor">
+              <p style="font-size:12px;color:var(--muted);margin:0;">Create or select an object to edit it.</p>
+            </div>
+            <div class="event-log">
+              <h3>What happened?</h3>
+              <div id="logList" class="log-list"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const classDefinitions = {
+      person: {
+        displayName: "Person",
+        attributes: ["name", "age", "eyes", "skin_color", "shirt_color"],
+        baseMethods: ["walk", "stop", "speak", "birthday"],
+        customMethods: [],
+      },
+      phone: {
+        displayName: "Phone",
+        attributes: ["name", "phone_type", "color", "cameras", "power", "torch"],
+        baseMethods: ["power_on", "power_off", "toggle_torch", "take_photo"],
+        customMethods: [],
+      }
+    };
+
+    let activeClass = "person";
+    let objects = [];
+    let selectedId = null;
+    let nextId = 1;
+    let logs = [];
+
+    const stage = document.getElementById("stage");
+    const createForm = document.getElementById("createForm");
+    const blueprintSummary = document.getElementById("blueprintSummary");
+    const codePreview = document.getElementById("codePreview");
+    const methodButtons = document.getElementById("methodButtons");
+    const selectedLabel = document.getElementById("selectedLabel");
+    const instanceCount = document.getElementById("instanceCount");
+    const objectEditor = document.getElementById("objectEditor");
+    const logList = document.getElementById("logList");
+    const toast = document.getElementById("toast");
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 1700);
+    }
+
+    function addLog(message) {
+      logs.unshift(message);
+      logs = logs.slice(0, 8);
+      renderLogs();
+    }
+
+    function renderLogs() {
+      logList.innerHTML = logs.length
+        ? logs.map(item => `<div class="log-item">${escapeHtml(item)}</div>`).join("")
+        : `<div class="log-item" style="border-left-color:#b8bfce;">Actions will be explained here.</div>`;
+    }
+
+    function renderBlueprint() {
+      const def = classDefinitions[activeClass];
+      const allMethods = [...def.baseMethods, ...def.customMethods];
+      blueprintSummary.innerHTML = `
+        <div class="blueprint-title">
+          <strong>class ${def.displayName}</strong>
+          <span>Blueprint</span>
+        </div>
+        <div class="mini-row"><b>Attributes</b><span>${def.attributes.join(", ")}</span></div>
+        <div class="mini-row"><b>Methods</b><span>${allMethods.map(m => m + "()").join(", ")}</span></div>
+      `;
+    }
+
+    function renderCreateForm() {
+      if (activeClass === "person") {
+        createForm.innerHTML = `
+          <div class="form-section">
+            <h3>Create a Person instance</h3>
+            <div class="field"><label for="personName">Name</label><input id="personName" value="Ali" /></div>
+            <div class="field"><label for="personAge">Age</label><input id="personAge" type="number" min="0" max="120" value="22" /></div>
+            <div class="field"><label for="personEyes">Number of eyes</label><input id="personEyes" type="number" min="0" max="8" value="2" /></div>
+            <div class="field"><label for="personSkin">Skin colour</label><input id="personSkin" type="color" value="#d9a679" /></div>
+            <div class="field"><label for="personShirt">Shirt colour</label><input id="personShirt" type="color" value="#5577dd" /></div>
+            <button id="createObjectBtn" class="primary-btn">Create Person object</button>
+          </div>
+        `;
+      } else {
+        createForm.innerHTML = `
+          <div class="form-section">
+            <h3>Create a Phone instance</h3>
+            <div class="field"><label for="phoneName">Object name</label><input id="phoneName" value="my_phone" /></div>
+            <div class="field">
+              <label for="phoneType">Phone type</label>
+              <select id="phoneType">
+                <option value="Basic">Basic — 1 camera</option>
+                <option value="Standard" selected>Standard — 2 cameras</option>
+                <option value="Pro">Pro — 3 cameras</option>
+                <option value="Ultra">Ultra — 4 cameras</option>
+              </select>
+            </div>
+            <div class="field"><label for="phoneColor">Body colour</label><input id="phoneColor" type="color" value="#3f4453" /></div>
+            <button id="createObjectBtn" class="primary-btn">Create Phone object</button>
+          </div>
+        `;
+      }
+      document.getElementById("createObjectBtn").addEventListener("click", createObject);
+    }
+
+    function sanitizeVariableName(value, fallback) {
+      const cleaned = String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9_]+/g, "_")
+        .replace(/^([0-9])/, "_$1")
+        .replace(/^_+|_+$/g, "");
+      return cleaned || fallback;
+    }
+
+    function createObject() {
+      let obj;
+      if (activeClass === "person") {
+        const name = document.getElementById("personName").value.trim() || `Person ${nextId}`;
+        obj = {
+          id: nextId++,
+          classType: "person",
+          variableName: sanitizeVariableName(name, `person_${nextId}`),
+          name,
+          age: Number(document.getElementById("personAge").value) || 0,
+          eyes: Math.max(0, Math.min(8, Number(document.getElementById("personEyes").value) || 0)),
+          skinColor: document.getElementById("personSkin").value,
+          shirtColor: document.getElementById("personShirt").value,
+          isWalking: false,
+          message: "",
+          messageVisible: false,
+        };
+      } else {
+        const type = document.getElementById("phoneType").value;
+        const cameraMap = { Basic: 1, Standard: 2, Pro: 3, Ultra: 4 };
+        const name = sanitizeVariableName(document.getElementById("phoneName").value, `phone_${nextId}`);
+        obj = {
+          id: nextId++,
+          classType: "phone",
+          variableName: name,
+          name,
+          phoneType: type,
+          color: document.getElementById("phoneColor").value,
+          cameras: cameraMap[type],
+          power: false,
+          torch: false,
+          photos: 0,
+        };
+      }
+      objects.push(obj);
+      selectedId = obj.id;
+      addLog(`Created ${obj.variableName}: a new ${classDefinitions[obj.classType].displayName} instance.`);
+      showToast(`${classDefinitions[obj.classType].displayName} object created`);
+      renderAll();
+    }
+
+    function selectObject(id) {
+      selectedId = id;
+      renderAll();
+    }
+
+    function selectedObject() {
+      return objects.find(o => o.id === selectedId) || null;
+    }
+
+    function renderPerson(obj) {
+      const eyeCount = Math.max(0, Math.min(8, obj.eyes));
+      const eyes = Array.from({ length: eyeCount }, (_, index) => {
+        const row = Math.floor(index / 4);
+        const col = index % 4;
+        const left = 12 + col * 10;
+        const top = 16 + row * 12;
+        return `<span class="eye" style="left:${left}px;top:${top}px"></span>`;
+      }).join("");
+
+      return `
+        <div class="person-visual ${obj.isWalking ? "walking" : ""}">
+          <div class="head" style="background:${obj.skinColor}">${eyes}</div>
+          <div class="body-shape" style="background:${obj.shirtColor}"></div>
+          <div class="leg left"></div>
+          <div class="leg right"></div>
+          <div class="speech ${obj.messageVisible ? "show" : ""}">${escapeHtml(obj.message)}</div>
+        </div>
+      `;
+    }
+
+    function renderPhone(obj) {
+      const cameras = Array.from({ length: obj.cameras }, () => `<span class="camera-dot"></span>`).join("");
+      return `
+        <div class="phone-visual" style="background:${obj.color}">
+          <div class="camera-cluster">${cameras}</div>
+          <div class="torch ${obj.torch ? "on" : ""}"></div>
+          <div class="phone-screen ${obj.power ? "on" : ""}">
+            ${obj.power ? `<span>${escapeHtml(obj.phoneType)}<br>${obj.photos} photos</span>` : `<span>OFF</span>`}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderStage() {
+      instanceCount.textContent = `${objects.length} object${objects.length === 1 ? "" : "s"}`;
+      if (!objects.length) {
+        stage.innerHTML = `
+          <div class="empty-state">
+            <div>
+              <div class="icon">🧩</div>
+              <h3>No objects yet</h3>
+              <p>Choose a blueprint, enter attribute values, and click “Create object”. Every new instance will appear here.</p>
+            </div>
+          </div>`;
+        return;
+      }
+
+      stage.innerHTML = `<div class="object-grid">${objects.map(obj => {
+        const selected = obj.id === selectedId ? "selected" : "";
+        const visual = obj.classType === "person" ? renderPerson(obj) : renderPhone(obj);
+        const props = obj.classType === "person"
+          ? [
+              ["name", obj.name], ["age", obj.age], ["eyes", obj.eyes], ["state", obj.isWalking ? "walking" : "stopped"]
+            ]
+          : [
+              ["type", obj.phoneType], ["cameras", obj.cameras], ["power", obj.power ? "on" : "off"], ["torch", obj.torch ? "on" : "off"]
+            ];
+        return `
+          <article class="object-card ${selected}" data-id="${obj.id}">
+            <span class="object-badge">Object #${obj.id}</span>
+            <div class="object-title">${escapeHtml(obj.variableName)}</div>
+            <div class="visual-wrap">${visual}</div>
+            <div class="object-properties">
+              ${props.map(([key, value]) => `<div><span>${escapeHtml(key)}</span><b>${escapeHtml(value)}</b></div>`).join("")}
+            </div>
+          </article>`;
+      }).join("")}</div>`;
+
+      stage.querySelectorAll(".object-card").forEach(card => {
+        card.addEventListener("click", () => selectObject(Number(card.dataset.id)));
+      });
+    }
+
+    function renderMethods() {
+      const obj = selectedObject();
+      if (!obj) {
+        selectedLabel.textContent = "No object selected";
+        methodButtons.innerHTML = `<button class="method-btn" disabled>Create an object first</button>`;
+        return;
+      }
+      selectedLabel.textContent = `Selected: ${obj.variableName}`;
+      const def = classDefinitions[obj.classType];
+      const methods = [...def.baseMethods, ...def.customMethods];
+      methodButtons.innerHTML = methods.map(method =>
+        `<button class="method-btn" data-method="${escapeHtml(method)}">${escapeHtml(method)}()</button>`
+      ).join("");
+      methodButtons.querySelectorAll("button").forEach(button => {
+        button.addEventListener("click", () => callMethod(obj.id, button.dataset.method));
+      });
+    }
+
+    function callMethod(id, method) {
+      const obj = objects.find(o => o.id === id);
+      if (!obj) return;
+
+      if (obj.classType === "person") {
+        if (method === "walk") {
+          obj.isWalking = true;
+          addLog(`${obj.variableName}.walk() changed this object's state to walking.`);
+        } else if (method === "stop") {
+          obj.isWalking = false;
+          addLog(`${obj.variableName}.stop() changed this object's state to stopped.`);
+        } else if (method === "speak") {
+          obj.message = `Hello, I am ${obj.name}!`;
+          obj.messageVisible = true;
+          setTimeout(() => {
+            obj.messageVisible = false;
+            renderStage();
+          }, 1800);
+          addLog(`${obj.variableName}.speak() used the object's name attribute.`);
+        } else if (method === "birthday") {
+          obj.age += 1;
+          addLog(`${obj.variableName}.birthday() changed age to ${obj.age}.`);
+        } else {
+          obj.message = `${method}()`;
+          obj.messageVisible = true;
+          setTimeout(() => {
+            obj.messageVisible = false;
+            renderStage();
+          }, 1800);
+          addLog(`${obj.variableName}.${method}() called a custom class method.`);
+        }
+      } else {
+        if (method === "power_on") {
+          obj.power = true;
+          addLog(`${obj.variableName}.power_on() changed power to True.`);
+        } else if (method === "power_off") {
+          obj.power = false;
+          obj.torch = false;
+          addLog(`${obj.variableName}.power_off() changed power and torch to False.`);
+        } else if (method === "toggle_torch") {
+          if (!obj.power) {
+            showToast("Turn the phone on first");
+            addLog(`${obj.variableName}.toggle_torch() could not run because power is False.`);
+          } else {
+            obj.torch = !obj.torch;
+            addLog(`${obj.variableName}.toggle_torch() changed torch to ${obj.torch}.`);
+          }
+        } else if (method === "take_photo") {
+          if (!obj.power) {
+            showToast("Turn the phone on first");
+            addLog(`${obj.variableName}.take_photo() could not run because power is False.`);
+          } else {
+            obj.photos += 1;
+            showToast("Photo taken 📸");
+            addLog(`${obj.variableName}.take_photo() used its ${obj.cameras} camera(s).`);
+          }
+        } else {
+          showToast(`${obj.variableName}.${method}()`);
+          addLog(`${obj.variableName}.${method}() called a custom class method.`);
+        }
+      }
+      renderAll();
+    }
+
+    function renderEditor() {
+      const obj = selectedObject();
+      if (!obj) {
+        objectEditor.innerHTML = `<p style="font-size:12px;color:var(--muted);margin:0;">Create or select an object to edit it.</p>`;
+        return;
+      }
+
+      if (obj.classType === "person") {
+        objectEditor.innerHTML = `
+          <div class="field"><label>Variable</label><input id="editVariable" value="${escapeHtml(obj.variableName)}" /></div>
+          <div class="field"><label>Name</label><input id="editName" value="${escapeHtml(obj.name)}" /></div>
+          <div class="field"><label>Age</label><input id="editAge" type="number" min="0" max="120" value="${obj.age}" /></div>
+          <div class="field"><label>Eyes</label><input id="editEyes" type="number" min="0" max="8" value="${obj.eyes}" /></div>
+          <div class="field"><label>Skin colour</label><input id="editSkin" type="color" value="${obj.skinColor}" /></div>
+          <div class="field"><label>Shirt colour</label><input id="editShirt" type="color" value="${obj.shirtColor}" /></div>
+          <div class="editor-actions">
+            <button id="saveObjectBtn" class="secondary-btn">Apply changes</button>
+            <button id="deleteObjectBtn" class="danger-btn">Delete object</button>
+          </div>`;
+      } else {
+        objectEditor.innerHTML = `
+          <div class="field"><label>Variable</label><input id="editVariable" value="${escapeHtml(obj.variableName)}" /></div>
+          <div class="field">
+            <label>Phone type</label>
+            <select id="editPhoneType">
+              ${["Basic", "Standard", "Pro", "Ultra"].map(type => `<option ${obj.phoneType === type ? "selected" : ""}>${type}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field"><label>Body colour</label><input id="editPhoneColor" type="color" value="${obj.color}" /></div>
+          <div class="field"><label>Cameras</label><input value="${obj.cameras}" disabled /></div>
+          <div class="editor-actions">
+            <button id="saveObjectBtn" class="secondary-btn">Apply changes</button>
+            <button id="deleteObjectBtn" class="danger-btn">Delete object</button>
+          </div>`;
+      }
+
+      document.getElementById("saveObjectBtn").addEventListener("click", saveSelectedObject);
+      document.getElementById("deleteObjectBtn").addEventListener("click", deleteSelectedObject);
+    }
+
+    function saveSelectedObject() {
+      const obj = selectedObject();
+      if (!obj) return;
+      obj.variableName = sanitizeVariableName(document.getElementById("editVariable").value, `${obj.classType}_${obj.id}`);
+      if (obj.classType === "person") {
+        obj.name = document.getElementById("editName").value.trim() || obj.name;
+        obj.age = Math.max(0, Number(document.getElementById("editAge").value) || 0);
+        obj.eyes = Math.max(0, Math.min(8, Number(document.getElementById("editEyes").value) || 0));
+        obj.skinColor = document.getElementById("editSkin").value;
+        obj.shirtColor = document.getElementById("editShirt").value;
+        addLog(`Updated attributes belonging only to ${obj.variableName}.`);
+      } else {
+        const cameraMap = { Basic: 1, Standard: 2, Pro: 3, Ultra: 4 };
+        obj.phoneType = document.getElementById("editPhoneType").value;
+        obj.cameras = cameraMap[obj.phoneType];
+        obj.color = document.getElementById("editPhoneColor").value;
+        addLog(`Changed ${obj.variableName}.phone_type; its camera count automatically became ${obj.cameras}.`);
+      }
+      showToast("Object attributes updated");
+      renderAll();
+    }
+
+    function deleteSelectedObject() {
+      const obj = selectedObject();
+      if (!obj) return;
+      objects = objects.filter(o => o.id !== obj.id);
+      addLog(`Deleted ${obj.variableName}; the class blueprint still exists.`);
+      selectedId = objects.length ? objects[objects.length - 1].id : null;
+      renderAll();
+    }
+
+    function addCustomMethod() {
+      const input = document.getElementById("customMethodInput");
+      const method = sanitizeVariableName(input.value, "");
+      if (!method) {
+        showToast("Enter a method name");
+        return;
+      }
+      const def = classDefinitions[activeClass];
+      if ([...def.baseMethods, ...def.customMethods].includes(method)) {
+        showToast("That method already exists");
+        return;
+      }
+      def.customMethods.push(method);
+      input.value = "";
+      addLog(`Added ${method}() to the ${def.displayName} class blueprint.`);
+      showToast(`${method}() added to ${def.displayName}`);
+      renderAll();
+    }
+
+    function pythonString(value) {
+      return `"${String(value).replaceAll('"', '\\"')}"`;
+    }
+
+    function generatePersonClass() {
+      const def = classDefinitions.person;
+      const custom = def.customMethods.map(method => `\n    def ${method}(self):\n        print(f"{self.name} performs ${method}")`).join("");
+      return `class Person:\n    def __init__(self, name, age, eyes, skin_color, shirt_color):\n        self.name = name\n        self.age = age\n        self.eyes = eyes\n        self.skin_color = skin_color\n        self.shirt_color = shirt_color\n        self.is_walking = False\n\n    def walk(self):\n        self.is_walking = True\n\n    def stop(self):\n        self.is_walking = False\n\n    def speak(self):\n        print(f"Hello, I am {self.name}!")\n\n    def birthday(self):\n        self.age += 1${custom}`;
+    }
+
+    function generatePhoneClass() {
+      const def = classDefinitions.phone;
+      const custom = def.customMethods.map(method => `\n    def ${method}(self):\n        print("${method} method called")`).join("");
+      return `class Phone:\n    CAMERA_COUNTS = {\n        "Basic": 1, "Standard": 2,\n        "Pro": 3, "Ultra": 4\n    }\n\n    def __init__(self, phone_type, color):\n        self.phone_type = phone_type\n        self.color = color\n        self.cameras = self.CAMERA_COUNTS[phone_type]\n        self.power = False\n        self.torch = False\n\n    def power_on(self):\n        self.power = True\n\n    def power_off(self):\n        self.power = False\n        self.torch = False\n\n    def toggle_torch(self):\n        if self.power:\n            self.torch = not self.torch\n\n    def take_photo(self):\n        if self.power:\n            print(f"Photo taken with {self.cameras} cameras")${custom}`;
+    }
+
+    function renderCode() {
+      const personObjects = objects.filter(o => o.classType === "person");
+      const phoneObjects = objects.filter(o => o.classType === "phone");
+      const sections = [];
+
+      if (activeClass === "person" || personObjects.length) sections.push(generatePersonClass());
+      if (activeClass === "phone" || phoneObjects.length) sections.push(generatePhoneClass());
+
+      if (objects.length) {
+        const objectCode = objects.map(obj => {
+          if (obj.classType === "person") {
+            return `${obj.variableName} = Person(${pythonString(obj.name)}, ${obj.age}, ${obj.eyes}, ${pythonString(obj.skinColor)}, ${pythonString(obj.shirtColor)})`;
+          }
+          return `${obj.variableName} = Phone(${pythonString(obj.phoneType)}, ${pythonString(obj.color)})`;
+        }).join("\n");
+        sections.push(`# Create independent objects\n${objectCode}`);
+      } else {
+        sections.push(`# Create an object from the class\n# person_1 = Person("Ali", 22, 2, "#d9a679", "#5577dd")`);
+      }
+
+      const selected = selectedObject();
+      if (selected) {
+        sections.push(`# Call a method on one selected object\n# ${selected.variableName}.${selected.classType === "person" ? "walk" : "power_on"}()`);
+      }
+
+      codePreview.textContent = sections.join("\n\n\n");
+    }
+
+    function renderAll() {
+      renderBlueprint();
+      renderStage();
+      renderMethods();
+      renderEditor();
+      renderCode();
+      renderLogs();
+    }
+
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        activeClass = tab.dataset.class;
+        document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t === tab));
+        renderBlueprint();
+        renderCreateForm();
+        renderMethods();
+        renderCode();
+      });
+    });
+
+    document.getElementById("addMethodBtn").addEventListener("click", addCustomMethod);
+    document.getElementById("customMethodInput").addEventListener("keydown", event => {
+      if (event.key === "Enter") addCustomMethod();
+    });
+
+    renderBlueprint();
+    renderCreateForm();
+    renderAll();
+  </script>
+</body>
+</html>
