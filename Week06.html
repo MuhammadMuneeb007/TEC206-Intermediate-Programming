@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Python OOP Interactive Studio</title>
+<style>
+:root{
+  --bg:#f5f7fb;
+  --paper:#ffffff;
+  --paper2:#f9fbff;
+  --text:#172033;
+  --muted:#667085;
+  --line:#d9e1ec;
+  --blue:#2563eb;
+  --blue2:#dbeafe;
+  --purple:#7c3aed;
+  --purple2:#ede9fe;
+  --green:#15803d;
+  --green2:#dcfce7;
+  --orange:#c2410c;
+  --orange2:#ffedd5;
+  --red:#b42318;
+  --red2:#fee4e2;
+  --shadow:0 10px 30px rgba(22,34,51,.08);
+  --radius:16px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  color:var(--text);
+  background:linear-gradient(180deg,#fbfdff 0,#f5f7fb 260px,#f5f7fb 100%);
+  line-height:1.5;
+}
+button,input,select,textarea{font:inherit}
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.nav{
+  max-width:1380px;margin:auto;padding:10px 22px;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap
+}
+.brand{font-weight:850;margin-right:auto;color:#0f172a}
+.nav a{
+  text-decoration:none;color:#344054;font-size:.9rem;padding:7px 9px;border-radius:9px
+}
+.nav a:hover{background:#f2f4f7}
+.hero{
+  max-width:1380px;margin:auto;padding:54px 22px 24px;
+  display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center
+}
+.hero h1{font-size:clamp(2.3rem,5vw,4.7rem);line-height:1.02;margin:0 0 14px;color:#101828}
+.hero p{font-size:1.08rem;color:var(--muted);max-width:800px}
+.kicker{
+  display:inline-flex;align-items:center;gap:7px;
+  background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;
+  border-radius:999px;padding:6px 10px;font-weight:700;font-size:.82rem
+}
+.hero-demo{
+  background:var(--paper);border:1px solid var(--line);border-radius:22px;
+  padding:20px;box-shadow:var(--shadow)
+}
+main{max-width:1380px;margin:auto;padding:0 22px 80px}
+section{
+  margin-top:28px;background:var(--paper);border:1px solid var(--line);
+  border-radius:var(--radius);padding:24px;box-shadow:0 6px 20px rgba(22,34,51,.04)
+}
+h2{margin:0 0 8px;font-size:1.75rem;color:#101828}
+h3{color:#101828}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+.grid{display:grid;gap:16px}
+.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{
+  border:1px solid var(--line);background:var(--paper2);border-radius:14px;padding:16px
+}
+.btn{
+  border:none;background:var(--blue);color:white;padding:9px 13px;border-radius:10px;
+  font-weight:750;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05)
+}
+.btn:hover{filter:brightness(.97)}
+.btn.secondary{background:white;color:#344054;border:1px solid #cfd8e6}
+.btn.purple{background:var(--purple)}
+.btn.green{background:var(--green)}
+.btn.orange{background:var(--orange)}
+.btn.danger{background:var(--red)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.controls{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+input,select,textarea{
+  border:1px solid #cfd8e6;border-radius:10px;background:white;color:#172033;
+  padding:9px 10px;outline:none
+}
+input:focus,select:focus,textarea:focus{border-color:#7aa7ff;box-shadow:0 0 0 3px rgba(37,99,235,.09)}
+textarea{width:100%;resize:vertical}
+.codebox{
+  width:100%;min-height:440px;font:14px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  background:#fbfcfe;border:1px solid #ccd6e3;border-radius:12px;padding:14px;
+  white-space:pre;tab-size:4;color:#0f172a
+}
+.preview-code{
+  background:#0f172a;color:#e2e8f0;border-radius:12px;padding:14px;overflow:auto;
+  white-space:pre;font:13.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace
+}
+.status{
+  min-height:46px;border:1px dashed #b7c3d4;border-radius:11px;background:#fbfdff;padding:11px 12px
+}
+.status.good{border-color:#86efac;background:#f0fdf4;color:#166534}
+.status.warn{border-color:#fdba74;background:#fff7ed;color:#9a3412}
+.status.bad{border-color:#fca5a5;background:#fef2f2;color:#991b1b}
+.pill{
+  display:inline-flex;align-items:center;padding:4px 9px;border-radius:999px;
+  border:1px solid #cfd8e6;background:white;color:#475467;font-size:.8rem;font-weight:700
+}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.tab{
+  border:1px solid #cfd8e6;background:white;color:#344054;padding:8px 11px;border-radius:9px;cursor:pointer
+}
+.tab.active{background:#eff6ff;border-color:#93c5fd;color:#1d4ed8;font-weight:750}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.studio{
+  display:grid;grid-template-columns:minmax(460px,.82fr) minmax(720px,1.38fr);gap:16px
+}
+.diagram-wrap{
+  border:1px solid #cfd8e6;border-radius:13px;background:
+    linear-gradient(#eef2f7 1px,transparent 1px),
+    linear-gradient(90deg,#eef2f7 1px,transparent 1px),
+    #fcfdff;
+  background-size:28px 28px;
+  height:760px;min-height:760px;overflow:auto;position:relative;padding:20px
+}
+.diagram-stage{
+  position:relative;min-height:720px;min-width:1100px;transform-origin:top left
+}
+.class-card{
+  position:absolute;width:240px;min-height:170px;background:white;border:2px solid #90a3bc;border-radius:12px;
+  box-shadow:0 8px 20px rgba(16,24,40,.08);overflow:hidden;z-index:2
+}
+.class-card .title{
+  padding:10px 12px;font-weight:850;background:#eff6ff;border-bottom:1px solid #cbd5e1;
+  color:#1e3a8a;text-align:center
+}
+.class-card.child .title{background:#f5f3ff;color:#5b21b6}
+.class-card .part{padding:9px 11px;border-bottom:1px solid #e5e7eb;font-size:.82rem}
+.class-card .part:last-child{border-bottom:none}
+.class-card code{font-size:.82rem}
+.svg-lines{position:absolute;inset:0;z-index:1;pointer-events:none}
+.arrowline{stroke:#64748b;stroke-width:2;fill:none}
+.code-toolbar{
+  display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px
+}
+.builder-layout{display:grid;grid-template-columns:380px minmax(0,1fr);gap:16px}
+.class-list{display:flex;flex-direction:column;gap:9px;max-height:520px;overflow:auto}
+.class-item{
+  border:1px solid #d7dee9;border-radius:11px;background:white;padding:10px;cursor:pointer
+}
+.class-item.active{border-color:#7aa7ff;background:#eff6ff}
+.form-row{display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center;margin:8px 0}
+.form-row label{font-weight:700;font-size:.9rem;color:#344054}
+.tagrow{display:flex;gap:6px;flex-wrap:wrap}
+.tag{
+  background:#eef2f6;border:1px solid #d7dee9;color:#475467;border-radius:8px;padding:4px 7px;font-size:.78rem
+}
+.concept{
+  border-left:4px solid var(--blue);padding:13px 14px;background:#f8fbff;border-radius:10px
+}
+.concept.purple{border-left-color:var(--purple);background:#faf8ff}
+.concept.green{border-left-color:var(--green);background:#f7fff8}
+.concept.orange{border-left-color:var(--orange);background:#fffaf7}
+.demo-output{
+  border:1px dashed #b8c4d3;border-radius:11px;background:#fcfdff;padding:12px;min-height:54px
+}
+.class-mini{
+  display:inline-flex;flex-direction:column;min-width:155px;border:1px solid #b8c4d3;border-radius:10px;overflow:hidden;background:white
+}
+.class-mini b{padding:8px 10px;background:#eff6ff;text-align:center;color:#1e3a8a}
+.class-mini span{padding:6px 10px;border-top:1px solid #e5e7eb;font-size:.82rem}
+.tree{display:flex;flex-direction:column;align-items:center;gap:12px;margin:12px 0}
+.tree-row{display:flex;gap:24px;justify-content:center;flex-wrap:wrap}
+.arrow{color:#94a3b8;font-size:1.45rem}
+.option{
+  width:100%;text-align:left;border:1px solid #d6dee9;background:white;color:#344054;padding:10px 11px;
+  border-radius:10px;margin:7px 0;cursor:pointer
+}
+.option:hover{border-color:#93a8c2}
+.option.selected{border-color:#60a5fa;background:#eff6ff}
+.option.correct{border-color:#4ade80;background:#f0fdf4}
+.option.wrong{border-color:#f87171;background:#fef2f2}
+.flash{animation:flash .8s ease}
+@keyframes flash{0%{transform:scale(1)}40%{transform:scale(1.03)}100%{transform:scale(1)}}
+@media(max-width:1050px){
+  .hero,.studio,.builder-layout,.grid4,.grid3,.grid2{grid-template-columns:1fr}
+  .diagram-stage{min-width:900px}
+  .diagram-wrap{height:700px;min-height:700px}
+}
+@media(max-width:650px){
+  .nav{justify-content:center}.brand{width:100%;text-align:center;margin:0}
+  section{padding:17px}.hero{padding-top:34px}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="nav">
+    <div class="brand">Python OOP Interactive Studio</div>
+    <a href="#studio">Code → Diagram</a>
+    <a href="#builder">GUI → Code</a>
+    <a href="#concepts">Concepts</a>
+    <a href="#examples">Examples</a>
+    <a href="#quiz">Quiz</a>
+  </div>
+</div>
+
+<div class="hero">
+  <div>
+    <span class="kicker">☀️ Light theme • One standalone HTML file</span>
+    <h1>Build classes. See inheritance. Generate Python.</h1>
+    <p>
+      Type Python classes and turn them into a visual hierarchy, or create classes with the GUI
+      and generate Python code automatically. Then use the interactive examples to understand
+      inheritance, polymorphism, encapsulation, abstraction, overriding, <code>super()</code>,
+      multiple inheritance and MRO.
+    </p>
+    <div class="controls">
+      <button class="btn" onclick="document.getElementById('studio').scrollIntoView()">Open Code Studio</button>
+      <button class="btn secondary" onclick="document.getElementById('builder').scrollIntoView()">Open GUI Builder</button>
+    </div>
+  </div>
+  <div class="hero-demo">
+    <div class="tree">
+      <div class="class-mini"><b>Animal</b><span>+ name</span><span>+ speak()</span></div>
+      <div class="arrow">↓ inherits</div>
+      <div class="tree-row">
+        <div class="class-mini"><b>Dog</b><span>+ breed</span><span>+ speak()</span></div>
+        <div class="class-mini"><b>Cat</b><span>+ color</span><span>+ speak()</span></div>
+      </div>
+    </div>
+    <div class="demo-output"><b>Polymorphism:</b> the same <code>speak()</code> call can produce “Woof!” or “Meow!”.</div>
+  </div>
+</div>
+
+<main>
+
+<section id="studio">
+  <h2>1. Python Code → Interactive Class Diagram</h2>
+  <p class="muted">
+    Write or paste normal class definitions below. This self-contained page parses the class structure,
+    attributes, methods and inheritance locally in your browser. It does not send your code anywhere.
+  </p>
+  <div class="studio">
+    <div>
+      <div class="code-toolbar">
+        <div class="controls">
+          <button class="btn" onclick="parseCodeToDiagram()">Build Diagram</button>
+          <button class="btn secondary" onclick="loadExample('inheritance')">Inheritance example</button>
+          <button class="btn secondary" onclick="loadExample('polymorphism')">Polymorphism example</button>
+          <button class="btn secondary" onclick="loadExample('multiple')">Multiple inheritance</button>
+          <button class="btn secondary" onclick="loadExample('large')">8-class example</button>
+        </div>
+      </div>
+      <textarea id="pythonInput" class="codebox" spellcheck="false"></textarea>
+      <div id="parseStatus" class="status" style="margin-top:10px">Edit the Python and click <b>Build Diagram</b>.</div>
+    </div>
+    <div>
+      <div class="code-toolbar">
+        <div class="controls"><span class="pill">Large visual class hierarchy</span><span class="pill" id="classCount">0 classes</span></div>
+        <div class="controls">
+          <button class="btn secondary" onclick="zoomOut()">− Zoom</button>
+          <span class="pill" id="zoomLabel">100%</span>
+          <button class="btn secondary" onclick="zoomIn()">+ Zoom</button>
+          <button class="btn secondary" onclick="fitDiagram()">Fit</button>
+          <button class="btn green" onclick="exportDiagramPNG()">Save diagram PNG</button>
+        </div>
+      </div>
+      <div class="diagram-wrap" id="diagramViewport">
+        <div id="diagramStage" class="diagram-stage">
+          <svg id="diagramLines" class="svg-lines"></svg>
+          <div id="diagramCards"></div>
+        </div>
+      </div>
+      <div id="diagramExplanation" class="status" style="margin-top:10px">The hierarchy explanation will appear here.</div>
+    </div>
+  </div>
+</section>
+
+<section id="builder">
+  <h2>2. GUI Class Builder → Python Code</h2>
+  <p class="muted">
+    Create, edit and delete <b>multiple classes</b> visually. Add attributes and methods, choose each class's parent,
+    and the Python code updates immediately. Start with the example classes below, then add as many as you need.
+  </p>
+
+  <div class="builder-layout">
+    <div class="card">
+      <div class="controls" style="margin-bottom:10px">
+        <button class="btn green" onclick="newGUIClass()">+ New class</button>
+        <button class="btn secondary" onclick="duplicateGUIClass()">Duplicate</button>
+        <button class="btn danger" onclick="deleteGUIClass()">Delete</button>
+      </div>
+      <div id="guiClassList" class="class-list"></div>
+    </div>
+
+    <div class="grid grid2">
+      <div class="card">
+        <h3 style="margin-top:0">Selected class</h3>
+        <div class="form-row"><label>Class name</label><input id="gName" oninput="updateGUIClass()"></div>
+        <div class="form-row"><label>Parent</label><select id="gParent" onchange="updateGUIClass()"></select></div>
+        <div class="form-row"><label>Attributes</label><textarea id="gAttrs" rows="6" placeholder="name&#10;age=0&#10;species='Unknown'" oninput="updateGUIClass()"></textarea></div>
+        <div class="form-row"><label>Methods</label><textarea id="gMethods" rows="7" placeholder="speak: return 'Hello'&#10;describe: return self.name" oninput="updateGUIClass()"></textarea></div>
+        <p class="small muted">
+          Attributes: one per line. Methods: <code>method_name: return expression</code>.
+        </p>
+      </div>
+      <div>
+        <div class="code-toolbar">
+          <span class="pill">Generated Python</span>
+          <div class="controls">
+            <button class="btn secondary" onclick="copyGeneratedCode()">Copy code</button>
+            <button class="btn purple" onclick="sendGeneratedToStudio()">Send to diagram</button>
+          </div>
+        </div>
+        <div id="generatedCode" class="preview-code" style="min-height:445px"></div>
+        <div id="copyStatus" class="status" style="margin-top:10px">Changes appear here instantly.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="concepts">
+  <h2>3. Core OOP Concepts</h2>
+  <div class="grid grid4">
+    <div class="concept">
+      <h3>Inheritance</h3>
+      <p><b>Reuse and specialise.</b> A child class receives behaviour from a parent class.</p>
+      <div class="preview-code">class Dog(Animal):
+    pass</div>
+    </div>
+    <div class="concept purple">
+      <h3>Polymorphism</h3>
+      <p><b>Same interface, different behaviour.</b> Different objects implement the same method differently.</p>
+      <div class="preview-code">animal.speak()</div>
+    </div>
+    <div class="concept green">
+      <h3>Encapsulation</h3>
+      <p><b>Protect state.</b> Objects manage their own data through controlled methods.</p>
+      <div class="preview-code">account.deposit(50)</div>
+    </div>
+    <div class="concept orange">
+      <h3>Abstraction</h3>
+      <p><b>Hide unnecessary detail.</b> Users work through a simple interface.</p>
+      <div class="preview-code">payment.pay(100)</div>
+    </div>
+  </div>
+</section>
+
+<section id="examples">
+  <h2>4. Interactive Worked Examples</h2>
+  <div class="tabs" id="exampleTabs">
+    <button class="tab active" data-target="ex-inheritance">Inheritance</button>
+    <button class="tab" data-target="ex-overriding">Overriding</button>
+    <button class="tab" data-target="ex-polymorphism">Polymorphism</button>
+    <button class="tab" data-target="ex-super">super()</button>
+    <button class="tab" data-target="ex-encapsulation">Encapsulation</button>
+    <button class="tab" data-target="ex-abstraction">Abstraction</button>
+    <button class="tab" data-target="ex-mro">Multiple inheritance / MRO</button>
+  </div>
+
+  <div id="ex-inheritance" class="tab-panel active">
+    <div class="grid grid2">
+      <div>
+        <div class="preview-code">class Animal:
+    def eat(self):
+        return "Eating"
+
+class Dog(Animal):
+    def bark(self):
+        return "Woof"
+
+dog = Dog()
+print(dog.eat())</div>
+      </div>
+      <div class="card">
+        <h3>Why does <code>dog.eat()</code> work?</h3>
+        <button class="btn" onclick="animateLookup()">Animate method lookup</button>
+        <div class="tree" id="lookupTree">
+          <div class="class-mini" id="lookupDog"><b>Dog</b><span>bark()</span></div>
+          <div class="arrow">↓ search parent</div>
+          <div class="class-mini" id="lookupAnimal"><b>Animal</b><span>eat()</span></div>
+        </div>
+        <div id="lookupOutput" class="demo-output">Click the button.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ex-overriding" class="tab-panel">
+    <div class="grid grid2">
+      <div class="preview-code">class Animal:
+    def speak(self):
+        return "Some sound"
+
+class Dog(Animal):
+    def speak(self):
+        return "Woof"</div>
+      <div class="card">
+        <h3>Method overriding</h3>
+        <p>Both classes contain <code>speak()</code>. The child's version is used for a <code>Dog</code>.</p>
+        <div class="controls">
+          <button class="btn" onclick="overrideDemo('Animal')">Animal.speak()</button>
+          <button class="btn purple" onclick="overrideDemo('Dog')">Dog.speak()</button>
+        </div>
+        <div id="overrideOutput" class="demo-output" style="margin-top:10px">Choose a call.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ex-polymorphism" class="tab-panel">
+    <div class="grid grid2">
+      <div class="preview-code">animals = [Dog(), Cat(), Cow()]
+
+for animal in animals:
+    print(animal.speak())</div>
+      <div class="card">
+        <h3>Same method, many forms</h3>
+        <div class="controls">
+          <button class="btn" onclick="polyDemo('Dog')">Dog</button>
+          <button class="btn purple" onclick="polyDemo('Cat')">Cat</button>
+          <button class="btn orange" onclick="polyDemo('Cow')">Cow</button>
+          <button class="btn secondary" onclick="polyLoop()">Run loop</button>
+        </div>
+        <div id="polyOutput" class="demo-output" style="margin-top:10px">Choose an object or run the loop.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ex-super" class="tab-panel">
+    <div class="grid grid2">
+      <div class="preview-code">class Employee:
+    def __init__(self, name):
+        self.name = name
+
+class Manager(Employee):
+    def __init__(self, name, dept):
+        super().__init__(name)
+        self.dept = dept</div>
+      <div class="card">
+        <h3>Constructor chain</h3>
+        <button class="btn" onclick="superDemo()">Run <code>Manager("Ava","AI")</code></button>
+        <div id="superOutput" class="demo-output" style="margin-top:10px">Click to trace the calls.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ex-encapsulation" class="tab-panel">
+    <div class="grid grid2">
+      <div class="preview-code">class BankAccount:
+    def __init__(self, balance=0):
+        self._balance = balance
+
+    def deposit(self, amount):
+        if amount > 0:
+            self._balance += amount</div>
+      <div class="card">
+        <h3>Bank account simulator</h3>
+        <div class="controls">
+          <input type="number" id="bankAmount" value="50" min="1">
+          <button class="btn green" onclick="deposit()">Deposit</button>
+          <button class="btn danger" onclick="withdraw()">Withdraw</button>
+        </div>
+        <p><b>Balance:</b> $<span id="balanceText">100.00</span></p>
+        <div id="bankOutput" class="demo-output">Use the methods rather than directly changing the internal balance.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ex-abstraction" class="tab-panel">
+    <div class="grid grid2">
+      <div class="preview-code">class PaymentMethod:
+    def pay(self, amount):
+        raise NotImplementedError
+
+class CardPayment(PaymentMethod):
+    def pay(self, amount):
+        ...</div>
+      <div class="card">
+        <h3>One simple interface</h3>
+        <div class="controls">
+          <select id="payMethod">
+            <option value="CardPayment">Card</option>
+            <option value="PayPalPayment">PayPal</option>
+            <option value="BankPayment">Bank transfer</option>
+          </select>
+          <input type="number" id="payAmount" value="79.95">
+          <button class="btn" onclick="payDemo()">pay(amount)</button>
+        </div>
+        <div id="payOutput" class="demo-output" style="margin-top:10px">The caller only needs to know <code>pay()</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ex-mro" class="tab-panel">
+    <div class="grid grid2">
+      <div class="preview-code">class A:
+    def identify(self): return "A"
+
+class B(A):
+    def identify(self): return "B"
+
+class C(A):
+    def identify(self): return "C"
+
+class D(B, C):
+    pass
+
+print(D.mro())</div>
+      <div class="card">
+        <h3>Method Resolution Order</h3>
+        <p><code>D → B → C → A → object</code></p>
+        <button class="btn" onclick="mroDemo()">Search for <code>D.identify()</code></button>
+        <div id="mroOutput" class="demo-output" style="margin-top:10px">Click to animate the lookup.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>5. Types of Inheritance</h2>
+  <div class="grid grid4">
+    <div class="card">
+      <h3>Single</h3>
+      <div class="preview-code">Vehicle
+   ↓
+  Car</div>
+    </div>
+    <div class="card">
+      <h3>Multilevel</h3>
+      <div class="preview-code">LivingThing
+    ↓
+  Animal
+    ↓
+   Dog</div>
+    </div>
+    <div class="card">
+      <h3>Hierarchical</h3>
+      <div class="preview-code">      Shape
+     ↙     ↘
+ Circle  Rectangle</div>
+    </div>
+    <div class="card">
+      <h3>Multiple</h3>
+      <div class="preview-code">Camera   Phone
+   ↘     ↙
+ SmartPhone</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>6. Inheritance or Composition?</h2>
+  <p class="muted">A useful rule: <b>is-a → inheritance</b>, <b>has-a → composition</b>.</p>
+  <div id="relationGame"></div>
+</section>
+
+<section id="quiz">
+  <h2>7. Interactive Quiz</h2>
+  <p class="muted">One question at a time, four options, instant explanation.</p>
+  <div class="card">
+    <span id="quizProgress" class="pill"></span>
+    <h3 id="quizQuestion"></h3>
+    <div id="quizOptions"></div>
+    <div class="controls">
+      <button class="btn" id="quizSubmit" onclick="submitQuiz()">Submit answer</button>
+      <button class="btn secondary" id="quizNext" onclick="nextQuiz()" disabled>Next question</button>
+    </div>
+    <div id="quizFeedback" class="demo-output" style="margin-top:10px">Choose an option.</div>
+    <p><b>Score:</b> <span id="quizScore">0</span></p>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ------------------ Examples ------------------ */
+const examples={
+inheritance:`class Animal:
+    def __init__(self, name):
+        self.name = name
+
+    def eat(self):
+        return "Eating"
+
+class Dog(Animal):
+    def __init__(self, name, breed):
+        super().__init__(name)
+        self.breed = breed
+
+    def bark(self):
+        return "Woof"
+
+class Cat(Animal):
+    def __init__(self, name, color):
+        super().__init__(name)
+        self.color = color
+
+    def meow(self):
+        return "Meow"
+`,
+polymorphism:`class Animal:
+    def speak(self):
+        return "Some sound"
+
+class Dog(Animal):
+    def speak(self):
+        return "Woof"
+
+class Cat(Animal):
+    def speak(self):
+        return "Meow"
+
+class Cow(Animal):
+    def speak(self):
+        return "Moo"
+`,
+multiple:`class Device:
+    def power_on(self):
+        return "Power on"
+
+class Camera:
+    def take_photo(self):
+        return "Photo taken"
+
+class Phone:
+    def make_call(self):
+        return "Calling"
+
+class GPS:
+    def navigate(self):
+        return "Navigating"
+
+class SmartPhone(Device, Camera, Phone, GPS):
+    def browse_web(self):
+        return "Browsing"
+`,
+large:`class LivingThing:
+    def grow(self):
+        return "Growing"
+
+class Animal(LivingThing):
+    def __init__(self, name):
+        self.name = name
+
+    def eat(self):
+        return "Eating"
+
+class Mammal(Animal):
+    def breathe(self):
+        return "Breathing"
+
+class Bird(Animal):
+    def fly(self):
+        return "Flying"
+
+class Dog(Mammal):
+    def __init__(self, name, breed):
+        super().__init__(name)
+        self.breed = breed
+
+    def speak(self):
+        return "Woof"
+
+class Cat(Mammal):
+    def __init__(self, name, color):
+        super().__init__(name)
+        self.color = color
+
+    def speak(self):
+        return "Meow"
+
+class Eagle(Bird):
+    def hunt(self):
+        return "Hunting"
+
+class Penguin(Bird):
+    def swim(self):
+        return "Swimming"
+`
+};
+
+function loadExample(name){
+  document.getElementById("pythonInput").value=examples[name];
+  parseCodeToDiagram();
+}
+
+/* ------------------ Python subset parser ------------------ */
+function leadingSpaces(line){
+  const m=line.match(/^(\s*)/);
+  return m ? m[1].replace(/\t/g,"    ").length : 0;
+}
+function parsePythonClasses(code){
+  const lines=code.replace(/\r/g,"").split("\n");
+  const classes=[];
+  let current=null;
+  let currentMethod=null;
+
+  for(let i=0;i<lines.length;i++){
+    const raw=lines[i];
+    const trimmed=raw.trim();
+    if(!trimmed || trimmed.startsWith("#")) continue;
+    const indent=leadingSpaces(raw);
+
+    const cm=trimmed.match(/^class\s+([A-Za-z_]\w*)\s*(?:\(([^)]*)\))?\s*:/);
+    if(cm && indent===0){
+      current={
+        name:cm[1],
+        parents:(cm[2]||"").split(",").map(s=>s.trim()).filter(Boolean),
+        attributes:[],
+        methods:[]
+      };
+      classes.push(current);
+      currentMethod=null;
+      continue;
+    }
+
+    if(!current) continue;
+
+    const mm=trimmed.match(/^def\s+([A-Za-z_]\w*)\s*\(([^)]*)\)\s*:/);
+    if(mm && indent>=4){
+      currentMethod={name:mm[1],params:mm[2],attributes:[]};
+      current.methods.push(currentMethod);
+      continue;
+    }
+
+    if(currentMethod && indent>=8){
+      let am=trimmed.match(/^self\.([A-Za-z_]\w*)\s*=\s*(.+)$/);
+      if(am){
+        const item=am[1]+" = "+am[2];
+        if(!current.attributes.includes(item)) current.attributes.push(item);
+      }
+    }
+  }
+  return classes;
+}
+
+/* ------------------ Diagram layout ------------------ */
+let lastParsed=[];
+function parseCodeToDiagram(){
+  const code=document.getElementById("pythonInput").value;
+  const classes=parsePythonClasses(code);
+  lastParsed=classes;
+  const status=document.getElementById("parseStatus");
+
+  if(!classes.length){
+    status.className="status bad";
+    status.innerHTML="No top-level Python class definitions were detected. Try <code>class Animal:</code>.";
+    renderDiagram([]);
+    return;
+  }
+  status.className="status good";
+  status.innerHTML=`Detected <b>${classes.length}</b> class${classes.length===1?"":"es"}: ${classes.map(c=>c.name).join(", ")}.`;
+  renderDiagram(classes);
+}
+
+function renderDiagram(classes){
+  const cards=document.getElementById("diagramCards");
+  const svg=document.getElementById("diagramLines");
+  const expl=document.getElementById("diagramExplanation");
+  cards.innerHTML=""; svg.innerHTML="";
+  document.getElementById("classCount").textContent=`${classes.length} class${classes.length===1?"":"es"}`;
+  if(!classes.length){
+    lastLayout=null;
+    expl.className="status warn";
+    expl.textContent="Nothing to draw yet.";
+    return;
+  }
+
+  const byName=Object.fromEntries(classes.map(c=>[c.name,c]));
+  const roots=classes.filter(c=>!c.parents.some(p=>byName[p]));
+  const levels=[], placed=new Set();
+  let frontier=roots.length?roots:[classes[0]];
+  while(frontier.length){
+    const row=frontier.filter(c=>!placed.has(c.name));
+    if(!row.length) break;
+    levels.push(row); row.forEach(c=>placed.add(c.name));
+    const next=[];
+    classes.forEach(c=>{
+      if(!placed.has(c.name) && c.parents.some(p=>row.some(r=>r.name===p))) next.push(c);
+    });
+    frontier=next;
+  }
+  classes.forEach(c=>{if(!placed.has(c.name)){levels.push([c]);placed.add(c.name)}});
+
+  const cardW=240, cardH=180, rowH=245;
+  const maxRow=Math.max(1,...levels.map(r=>r.length));
+  const width=Math.max(1200,maxRow*310+180);
+  const height=Math.max(760,levels.length*rowH+100);
+  const stage=document.getElementById("diagramStage");
+  stage.style.width=width+"px"; stage.style.height=height+"px";
+  svg.setAttribute("width",width); svg.setAttribute("height",height);
+
+  const pos={};
+  levels.forEach((row,ri)=>{
+    const gap=width/(row.length+1), y=38+ri*rowH;
+    row.forEach((c,ci)=>{
+      const x=gap*(ci+1)-cardW/2;
+      pos[c.name]={x,y,w:cardW,h:cardH};
+      const el=document.createElement("div");
+      el.className="class-card "+(c.parents.length?"child":"");
+      el.style.left=x+"px"; el.style.top=y+"px";
+      const attrs=c.attributes.length?c.attributes:["—"];
+      const methods=c.methods.length?c.methods.map(m=>m.name+"("+m.params+")"):["—"];
+      el.innerHTML=`<div class="title">${escapeHtml(c.name)}${c.parents.length?`<div class="small">extends ${escapeHtml(c.parents.join(", "))}</div>`:""}</div>
+        <div class="part"><b>Attributes</b><br>${attrs.slice(0,6).map(a=>"• "+escapeHtml(a)).join("<br>")}</div>
+        <div class="part"><b>Methods</b><br>${methods.slice(0,6).map(m=>"• "+escapeHtml(m)).join("<br>")}</div>`;
+      cards.appendChild(el);
+    });
+  });
+
+  const defs=document.createElementNS("http://www.w3.org/2000/svg","defs");
+  defs.innerHTML=`<marker id="arrowhead" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><polygon points="0 0, 9 4, 0 8" fill="#64748b"></polygon></marker>`;
+  svg.appendChild(defs);
+
+  classes.forEach(c=>c.parents.forEach(parent=>{
+    const a=pos[parent],b=pos[c.name]; if(!a||!b) return;
+    const sx=a.x+a.w/2, sy=a.y+a.h, ex=b.x+b.w/2, ey=b.y;
+    const mid=(sy+ey)/2;
+    const line=document.createElementNS("http://www.w3.org/2000/svg","path");
+    line.setAttribute("d",`M ${sx} ${sy} C ${sx} ${mid}, ${ex} ${mid}, ${ex} ${ey}`);
+    line.setAttribute("class","arrowline"); line.setAttribute("marker-end","url(#arrowhead)");
+    svg.appendChild(line);
+  }));
+
+  lastLayout={levels,width,height,pos,cardW,cardH};
+  const inherited=classes.filter(c=>c.parents.length);
+  expl.className="status good";
+  expl.innerHTML=inherited.length?inherited.map(c=>`<b>${escapeHtml(c.name)}</b> inherits from <b>${escapeHtml(c.parents.join(", "))}</b>.`).join(" &nbsp; "):"No inheritance links detected.";
+  applyZoom();
+}
+
+let lastLayout=null;
+let diagramZoom=1;
+function applyZoom(){
+  document.getElementById("diagramStage").style.transform=`scale(${diagramZoom})`;
+  document.getElementById("zoomLabel").textContent=Math.round(diagramZoom*100)+"%";
+}
+function zoomIn(){diagramZoom=Math.min(1.8,diagramZoom+.1);applyZoom()}
+function zoomOut(){diagramZoom=Math.max(.35,diagramZoom-.1);applyZoom()}
+function fitDiagram(){
+  if(!lastLayout)return;
+  const vp=document.getElementById("diagramViewport");
+  const zx=(vp.clientWidth-45)/lastLayout.width, zy=(vp.clientHeight-45)/lastLayout.height;
+  diagramZoom=Math.max(.35,Math.min(1,Math.min(zx,zy)));
+  applyZoom(); vp.scrollTo(0,0);
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[ch]));
+}
+
+function roundedRect(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
+}
+function exportDiagramPNG(){
+  if(!lastLayout||!lastParsed.length){alert("Build a diagram first.");return}
+  const scale=2.25,pad=60,titleH=85;
+  const canvas=document.createElement("canvas");
+  canvas.width=Math.ceil((lastLayout.width+pad*2)*scale);
+  canvas.height=Math.ceil((lastLayout.height+pad*2+titleH)*scale);
+  const ctx=canvas.getContext("2d"); ctx.scale(scale,scale);
+  const cw=canvas.width/scale,ch=canvas.height/scale;
+  ctx.fillStyle="#ffffff";ctx.fillRect(0,0,cw,ch);
+  ctx.fillStyle="#101828";ctx.font="700 28px Arial";ctx.fillText("Python OOP Class Diagram",pad,45);
+  ctx.fillStyle="#667085";ctx.font="14px Arial";ctx.fillText(`${lastParsed.length} classes • high-resolution export`,pad,68);
+  const ox=pad,oy=pad+titleH;
+
+  // draw inheritance lines behind cards
+  ctx.strokeStyle="#64748b";ctx.lineWidth=2.2;
+  lastParsed.forEach(c=>c.parents.forEach(parent=>{
+    const a=lastLayout.pos[parent],b=lastLayout.pos[c.name];if(!a||!b)return;
+    const sx=ox+a.x+a.w/2,sy=oy+a.y+a.h,ex=ox+b.x+b.w/2,ey=oy+b.y,mid=(sy+ey)/2;
+    ctx.beginPath();ctx.moveTo(sx,sy);ctx.bezierCurveTo(sx,mid,ex,mid,ex,ey);ctx.stroke();
+    ctx.fillStyle="#64748b";ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex-6,ey-10);ctx.lineTo(ex+6,ey-10);ctx.closePath();ctx.fill();
+  }));
+
+  lastParsed.forEach(c=>{
+    const p=lastLayout.pos[c.name],x=ox+p.x,y=oy+p.y,w=p.w,h=p.h;
+    ctx.fillStyle="#ffffff";ctx.strokeStyle=c.parents.length?"#8b5cf6":"#3b82f6";ctx.lineWidth=2;
+    roundedRect(ctx,x,y,w,h,12);ctx.fill();ctx.stroke();
+    ctx.save();roundedRect(ctx,x,y,w,54,12);ctx.clip();ctx.fillStyle=c.parents.length?"#f5f3ff":"#eff6ff";ctx.fillRect(x,y,w,54);ctx.restore();
+    ctx.textAlign="center";ctx.fillStyle=c.parents.length?"#5b21b6":"#1e3a8a";ctx.font="700 16px Arial";ctx.fillText(c.name,x+w/2,y+22);
+    if(c.parents.length){ctx.font="11px Arial";ctx.fillText("extends "+c.parents.join(", "),x+w/2,y+40)}
+    ctx.textAlign="left";ctx.fillStyle="#344054";ctx.font="700 12px Arial";ctx.fillText("Attributes",x+12,y+74);
+    ctx.font="11px Arial";ctx.fillStyle="#475467";let cy=y+91;
+    (c.attributes.length?c.attributes:["—"]).slice(0,5).forEach(a=>{ctx.fillText("• "+a,x+12,cy);cy+=15});
+    cy+=5;ctx.fillStyle="#344054";ctx.font="700 12px Arial";ctx.fillText("Methods",x+12,cy);cy+=17;
+    ctx.font="11px Arial";ctx.fillStyle="#475467";(c.methods.length?c.methods.map(m=>m.name+"("+m.params+")"):["—"]).slice(0,5).forEach(m=>{ctx.fillText("• "+m,x+12,cy);cy+=15});
+  });
+  canvas.toBlob(blob=>{
+    const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="python_oop_class_diagram.png";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);
+  },"image/png");
+}
+
+/* ------------------ GUI builder ------------------ */
+let guiClasses=[
+  {name:"LivingThing",parent:"",attrs:[],methods:[{name:"grow",body:"return 'Growing'"}]},
+  {name:"Animal",parent:"LivingThing",attrs:["name='Unknown'"],methods:[{name:"eat",body:"return 'Eating'"}]},
+  {name:"Mammal",parent:"Animal",attrs:[],methods:[{name:"breathe",body:"return 'Breathing'"}]},
+  {name:"Bird",parent:"Animal",attrs:[],methods:[{name:"fly",body:"return 'Flying'"}]},
+  {name:"Dog",parent:"Mammal",attrs:["breed='Unknown'"],methods:[{name:"speak",body:"return 'Woof'"}]},
+  {name:"Cat",parent:"Mammal",attrs:["color='Unknown'"],methods:[{name:"speak",body:"return 'Meow'"}]}
+];
+let selectedGui=0;
+
+function renderGUIList(){
+  const root=document.getElementById("guiClassList");
+  root.innerHTML="";
+  guiClasses.forEach((c,i)=>{
+    const d=document.createElement("div");
+    d.className="class-item "+(i===selectedGui?"active":"");
+    d.onclick=()=>{selectedGui=i;renderGUIAll()};
+    d.innerHTML=`<b>${escapeHtml(c.name)}</b><div class="small muted">${c.parent?`inherits ${escapeHtml(c.parent)}`:"base class"}</div>
+      <div class="tagrow" style="margin-top:6px">
+        ${c.attrs.slice(0,3).map(a=>`<span class="tag">${escapeHtml(a)}</span>`).join("")}
+        ${c.methods.slice(0,2).map(m=>`<span class="tag">${escapeHtml(m.name)}()</span>`).join("")}
+      </div>`;
+    root.appendChild(d);
+  });
+}
+function populateEditor(){
+  if(!guiClasses.length)return;
+  const c=guiClasses[selectedGui];
+  document.getElementById("gName").value=c.name;
+  const parentSel=document.getElementById("gParent");
+  parentSel.innerHTML=`<option value="">No parent</option>`+
+    guiClasses.map((x,i)=>i===selectedGui?"":`<option value="${escapeHtml(x.name)}">${escapeHtml(x.name)}</option>`).join("");
+  parentSel.value=c.parent;
+  document.getElementById("gAttrs").value=c.attrs.join("\n");
+  document.getElementById("gMethods").value=c.methods.map(m=>`${m.name}: ${m.body}`).join("\n");
+}
+function updateGUIClass(){
+  if(!guiClasses.length)return;
+  const c=guiClasses[selectedGui];
+  c.name=(document.getElementById("gName").value||"Class"+(selectedGui+1)).replace(/\W+/g,"_");
+  c.parent=document.getElementById("gParent").value;
+  c.attrs=document.getElementById("gAttrs").value.split("\n").map(x=>x.trim()).filter(Boolean);
+  c.methods=document.getElementById("gMethods").value.split("\n").map(x=>x.trim()).filter(Boolean).map(line=>{
+    const idx=line.indexOf(":");
+    if(idx<0)return {name:line.replace(/\W+/g,"_"),body:"pass"};
+    return {name:line.slice(0,idx).trim().replace(/\W+/g,"_"),body:line.slice(idx+1).trim()||"pass"};
+  });
+  renderGUIList();renderGeneratedCode();
+}
+function newGUIClass(){
+  const name="Class"+(guiClasses.length+1);
+  guiClasses.push({name,parent:"",attrs:[],methods:[]});
+  selectedGui=guiClasses.length-1;
+  renderGUIAll();
+}
+function duplicateGUIClass(){
+  if(!guiClasses.length)return;
+  const c=guiClasses[selectedGui];
+  guiClasses.push({name:c.name+"Copy",parent:c.parent,attrs:[...c.attrs],methods:c.methods.map(m=>({...m}))});
+  selectedGui=guiClasses.length-1;
+  renderGUIAll();
+}
+function deleteGUIClass(){
+  if(guiClasses.length<=1){alert("Keep at least one class in the builder.");return}
+  const removed=guiClasses[selectedGui].name;
+  guiClasses.splice(selectedGui,1);
+  guiClasses.forEach(c=>{if(c.parent===removed)c.parent=""});
+  selectedGui=Math.max(0,selectedGui-1);
+  renderGUIAll();
+}
+function attrName(line){
+  return line.split("=")[0].trim().replace(/^self\./,"").replace(/\W+/g,"_")||"value";
+}
+function attrDefault(line){
+  const idx=line.indexOf("=");
+  return idx>=0?line.slice(idx+1).trim():"None";
+}
+function ownAttrSpecs(c){
+  return c.attrs.map(a=>({
+    name:attrName(a),
+    default:attrDefault(a)
+  }));
+}
+function inheritedAttrSpecs(c,seen=new Set()){
+  if(!c.parent || seen.has(c.parent)) return [];
+  seen.add(c.parent);
+  const p=guiClasses.find(x=>x.name===c.parent);
+  if(!p) return [];
+  return [...inheritedAttrSpecs(p,seen), ...ownAttrSpecs(p)];
+}
+function uniqueSpecs(specs){
+  const seen=new Set();
+  return specs.filter(s=>{
+    if(seen.has(s.name)) return false;
+    seen.add(s.name);
+    return true;
+  });
+}
+function generatePython(){
+  let out=[];
+  guiClasses.forEach(c=>{
+    out.push(`class ${c.name}${c.parent?`(${c.parent})`:""}:`);
+
+    const inherited=uniqueSpecs(inheritedAttrSpecs(c));
+    const own=uniqueSpecs(ownAttrSpecs(c));
+    const all=uniqueSpecs([...inherited,...own]);
+    const needsInit=all.length>0;
+
+    if(needsInit){
+      const params=all.map(a=>`${a.name}=${a.default}`).join(", ");
+      out.push(`    def __init__(self, ${params}):`);
+
+      if(c.parent){
+        const parentClass=guiClasses.find(x=>x.name===c.parent);
+        const directParentOwn=parentClass ? ownAttrSpecs(parentClass) : [];
+        const parentInherited=parentClass ? inheritedAttrSpecs(parentClass) : [];
+        const parentParams=uniqueSpecs([...parentInherited,...directParentOwn])
+          .map(a=>`${a.name}=${a.name}`)
+          .join(", ");
+        out.push(`        super().__init__(${parentParams})`);
+      }
+
+      own.forEach(a=>out.push(`        self.${a.name} = ${a.name}`));
+      if(c.parent && own.length===0 && all.length===0) out.push("        pass");
+      out.push("");
+    }
+
+    c.methods.forEach(m=>{
+      out.push(`    def ${m.name}(self):`);
+      out.push(`        ${m.body||"pass"}`);
+      out.push("");
+    });
+
+    if(!needsInit && !c.methods.length) out.push("    pass");
+    out.push("");
+  });
+  return out.join("\n").trim();
+}
+function renderGeneratedCode(){
+  document.getElementById("generatedCode").textContent=generatePython();
+}
+function renderGUIAll(){renderGUIList();populateEditor();renderGeneratedCode()}
+async function copyGeneratedCode(){
+  const code=generatePython();
+  try{
+    await navigator.clipboard.writeText(code);
+    document.getElementById("copyStatus").className="status good";
+    document.getElementById("copyStatus").textContent="Generated Python copied to clipboard.";
+  }catch(e){
+    document.getElementById("copyStatus").className="status warn";
+    document.getElementById("copyStatus").textContent="Clipboard access was blocked by the browser. Select and copy the generated code manually.";
+  }
+}
+function sendGeneratedToStudio(){
+  document.getElementById("pythonInput").value=generatePython();
+  document.getElementById("studio").scrollIntoView();
+  setTimeout(parseCodeToDiagram,250);
+}
+
+/* ------------------ Tabs ------------------ */
+function wireTabs(id){
+  const root=document.getElementById(id);
+  const tabs=root.querySelectorAll(".tab");
+  tabs.forEach(t=>t.onclick=()=>{
+    tabs.forEach(x=>x.classList.remove("active"));t.classList.add("active");
+    root.parentElement.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+    document.getElementById(t.dataset.target).classList.add("active");
+  });
+}
+wireTabs("exampleTabs");
+
+/* ------------------ Concept demos ------------------ */
+async function animateLookup(){
+  const dog=document.getElementById("lookupDog"),animal=document.getElementById("lookupAnimal"),out=document.getElementById("lookupOutput");
+  dog.classList.remove("flash");animal.classList.remove("flash");void dog.offsetWidth;
+  dog.classList.add("flash");
+  out.innerHTML="1. Python checks <b>Dog</b> for <code>eat()</code>. It is not there.";
+  await new Promise(r=>setTimeout(r,700));
+  animal.classList.add("flash");
+  out.innerHTML+="<br>2. Python moves to the parent <b>Animal</b> and finds <code>eat()</code>.<br>✅ Result: <b>Eating</b>";
+}
+function overrideDemo(type){
+  document.getElementById("overrideOutput").innerHTML=type==="Dog"
+    ? "<b>Dog.speak()</b> → Python finds the overridden method in Dog → <b>Woof</b>"
+    : "<b>Animal.speak()</b> → <b>Some sound</b>";
+}
+const sounds={Dog:"Woof 🐶",Cat:"Meow 🐱",Cow:"Moo 🐮"};
+function polyDemo(x){document.getElementById("polyOutput").innerHTML=`<code>${x}.speak()</code> → <b>${sounds[x]}</b>`}
+function polyLoop(){
+  document.getElementById("polyOutput").innerHTML=
+    Object.keys(sounds).map(x=>`animal = ${x} → animal.speak() → <b>${sounds[x]}</b>`).join("<br>");
+}
+async function superDemo(){
+  const out=document.getElementById("superOutput");out.innerHTML="";
+  const steps=[
+    "1. Manager.__init__('Ava', 'AI') starts.",
+    "2. super().__init__('Ava') calls Employee.__init__.",
+    "3. Employee stores self.name = 'Ava'.",
+    "4. Control returns to Manager.",
+    "5. Manager stores self.dept = 'AI'.",
+    "✅ The Manager object now contains both inherited and child-specific state."
+  ];
+  for(const s of steps){out.innerHTML+=escapeHtml(s)+"<br>";await new Promise(r=>setTimeout(r,420))}
+}
+let balance=100;
+function updateBalance(){document.getElementById("balanceText").textContent=balance.toFixed(2)}
+function deposit(){
+  const a=Number(document.getElementById("bankAmount").value);
+  const out=document.getElementById("bankOutput");
+  if(!(a>0)){out.textContent="Deposit rejected: amount must be positive.";return}
+  balance+=a;updateBalance();out.innerHTML=`✅ <code>deposit(${a})</code> validated the request and updated the internal balance.`;
+}
+function withdraw(){
+  const a=Number(document.getElementById("bankAmount").value);
+  const out=document.getElementById("bankOutput");
+  if(!(a>0)){out.textContent="Withdrawal rejected: amount must be positive.";return}
+  if(a>balance){out.textContent="Withdrawal rejected: insufficient funds.";return}
+  balance-=a;updateBalance();out.innerHTML=`✅ <code>withdraw(${a})</code> changed the internal state through a controlled method.`;
+}
+function payDemo(){
+  const method=document.getElementById("payMethod").value;
+  const amt=Number(document.getElementById("payAmount").value);
+  const details={
+    CardPayment:"tokenise card → authorise → capture",
+    PayPalPayment:"open wallet → authorise user → capture",
+    BankPayment:"create instruction → verify account → confirm transfer"
+  };
+  document.getElementById("payOutput").innerHTML=
+    `Caller uses <code>pay(${amt.toFixed(2)})</code>.<br><b>${method}</b> hides the details: ${details[method]}.`;
+}
+async function mroDemo(){
+  const out=document.getElementById("mroOutput");out.innerHTML="";
+  const steps=["Check D","Check B","Method identify() found in B","✅ Stop searching. C, A and object are not needed."];
+  for(const s of steps){out.innerHTML+=escapeHtml(s)+"<br>";await new Promise(r=>setTimeout(r,500))}
+}
+
+/* ------------------ Relation game ------------------ */
+const rels=[
+  ["Dog is an Animal","Inheritance","Because Dog is-a Animal."],
+  ["Car has an Engine","Composition","Because Car has-a Engine."],
+  ["Manager is an Employee","Inheritance","Because Manager is-a Employee."],
+  ["Course has a Teacher","Composition","Because Course has-a Teacher."]
+];
+function renderRelationGame(){
+  const root=document.getElementById("relationGame");root.innerHTML="";
+  rels.forEach((r,i)=>{
+    const d=document.createElement("div");d.className="card";d.style.margin="10px 0";
+    d.innerHTML=`<b>${i+1}. ${r[0]}</b>
+    <div class="controls" style="margin-top:8px">
+      <button class="btn secondary" onclick="relAnswer(${i},'Inheritance')">Inheritance</button>
+      <button class="btn secondary" onclick="relAnswer(${i},'Composition')">Composition</button>
+    </div>
+    <div class="small muted" id="rel${i}" style="margin-top:7px">Choose the better design.</div>`;
+    root.appendChild(d);
+  });
+}
+function relAnswer(i,ans){
+  const el=document.getElementById("rel"+i);
+  el.innerHTML=ans===rels[i][1]?`✅ Correct. ${rels[i][2]}`:`❌ Better answer: <b>${rels[i][1]}</b>. ${rels[i][2]}`;
+  el.style.color=ans===rels[i][1]?"#166534":"#991b1b";
+}
+renderRelationGame();
+
+/* ------------------ Quiz ------------------ */
+const quiz=[
+  {q:"Which relationship most naturally represents inheritance?",o:["has-a","is-a","contains-a","calls-a"],a:1,e:"Inheritance normally models an is-a relationship."},
+  {q:"What is method overriding?",o:["The child replaces a parent method with its own version","The parent deletes a child method","A class has two names","A method becomes private"],a:0,e:"A subclass can define a method with the same name but specialised behaviour."},
+  {q:"What is polymorphism?",o:["One class can only have one method","The same interface can have different implementations","All objects must return the same result","Data is always private"],a:1,e:"Polymorphism means the same operation can behave differently for different object types."},
+  {q:"What does super() commonly help with?",o:["Calling parent/next-MRO behaviour","Deleting inheritance","Making methods global","Turning methods into attributes"],a:0,e:"super() delegates to the next class implementation in the MRO."},
+  {q:"Which is better modelled using composition?",o:["Dog is Animal","Square is Shape","Manager is Employee","Car has Engine"],a:3,e:"Car has an Engine is a has-a relationship."},
+  {q:"What does encapsulation help protect?",o:["Internal object state","The operating system","HTML styles","Network speed"],a:0,e:"Encapsulation keeps state and the methods controlling it together."},
+  {q:"What does abstraction do?",o:["Shows every internal detail","Hides unnecessary implementation details","Removes classes","Prevents inheritance"],a:1,e:"Abstraction exposes what users need while hiding unnecessary implementation details."},
+  {q:"MRO is most important when...",o:["Methods have no names","Multiple inheritance creates several possible lookup paths","There are no classes","Only one integer exists"],a:1,e:"MRO defines the order Python follows when searching methods across an inheritance hierarchy."}
+];
+let qi=0,score=0,chosen=null,answered=false;
+function renderQuiz(){
+  const q=quiz[qi];
+  document.getElementById("quizProgress").textContent=`Question ${qi+1} of ${quiz.length}`;
+  document.getElementById("quizQuestion").textContent=q.q;
+  document.getElementById("quizFeedback").textContent="Choose an option.";
+  document.getElementById("quizSubmit").disabled=false;
+  document.getElementById("quizNext").disabled=true;
+  chosen=null;answered=false;
+  const root=document.getElementById("quizOptions");root.innerHTML="";
+  q.o.forEach((x,i)=>{
+    const b=document.createElement("button");b.className="option";b.textContent=`${String.fromCharCode(65+i)}. ${x}`;
+    b.onclick=()=>{if(answered)return;chosen=i;root.querySelectorAll(".option").forEach(z=>z.classList.remove("selected"));b.classList.add("selected")};
+    root.appendChild(b);
+  });
+}
+function submitQuiz(){
+  if(chosen===null){document.getElementById("quizFeedback").textContent="Select one option first.";return}
+  if(answered)return;answered=true;
+  const q=quiz[qi],opts=[...document.querySelectorAll("#quizOptions .option")];
+  opts[q.a].classList.add("correct");
+  if(chosen===q.a){score++;document.getElementById("quizFeedback").innerHTML=`✅ <b>Correct.</b> ${q.e}`}
+  else{opts[chosen].classList.add("wrong");document.getElementById("quizFeedback").innerHTML=`❌ <b>Incorrect.</b> ${q.e}`}
+  document.getElementById("quizScore").textContent=score;
+  document.getElementById("quizSubmit").disabled=true;
+  document.getElementById("quizNext").disabled=false;
+  document.getElementById("quizNext").textContent=qi===quiz.length-1?"Final result":"Next question";
+}
+function nextQuiz(){
+  if(!answered)return;
+  if(qi<quiz.length-1){qi++;renderQuiz();return}
+  const pct=Math.round(score/quiz.length*100);
+  document.getElementById("quizProgress").textContent="Quiz complete";
+  document.getElementById("quizQuestion").textContent=`Final score: ${score}/${quiz.length} (${pct}%)`;
+  document.getElementById("quizOptions").innerHTML="";
+  document.getElementById("quizFeedback").innerHTML=pct>=80?"🎉 Excellent understanding.":pct>=60?"👍 Good work. Review a few concepts and try again.":"📘 Review the examples above, then retry.";
+  document.getElementById("quizSubmit").style.display="none";
+  const n=document.getElementById("quizNext");n.textContent="Restart quiz";n.onclick=()=>location.reload();
+}
+renderQuiz();
+
+/* ------------------ Startup ------------------ */
+loadExample("large");
+renderGUIAll();
+updateBalance();
+</script>
+</body>
+</html>
